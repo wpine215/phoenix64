@@ -1,23 +1,20 @@
 /*
- * phoenix/stack-zero, by https://exploit.education
+ * phoenix/stack-one, by https://exploit.education
  *
- * The aim is to change the contents of the changeme variable.
+ * The aim is to change the contents of the changeme variable to 0x496c5962
  *
- * Scientists have recently discovered a previously unknown species of
- * kangaroos, approximately in the middle of Western Australia. These
- * kangaroos are remarkable, as their insanely powerful hind legs give them
- * the ability to jump higher than a one story house (which is approximately
- * 15 feet, or 4.5 metres), simply because houses can't can't jump.
+ * Did you hear about the kid napping at the local school?
+ * It's okay, they woke up.
+ *
  */
 
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #define BANNER "Welcome to " LEVELNAME ", brought to you by https://exploit.education"
-
-char *gets(char *);
 
 int main(int argc, char **argv) {
     struct {
@@ -27,13 +24,17 @@ int main(int argc, char **argv) {
 
     printf("%s\n", BANNER);
 
-    locals.changeme = 0;
-    gets(locals.buffer);
+    if (argc < 2) {
+        errx(1, "specify an argument, to be copied into the \"buffer\"");
+    }
 
-    if (locals.changeme != 0) {
-        
+    locals.changeme = 0;
+    strcpy(locals.buffer, argv[1]);
+
+    if (locals.changeme == 0x496c5962) {
+        puts("Well done, you have successfully set changeme to the correct value");
     } else {
-        puts("Uh oh, 'changeme' has not yet been changed. Would you like to try again?");
+        printf("Getting closer! changeme is currently 0x%08x, we want 0x496c5962\n", locals.changeme);
     }
 
     exit(0);
